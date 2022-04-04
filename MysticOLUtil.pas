@@ -11,7 +11,7 @@ Type
    one-liner data.  It can be any number of records in size. *)
 
   OneLineRec = Record
-    Text : String[78];
+    Text : String[79];
     From : String[30];
   End;
 
@@ -71,14 +71,13 @@ begin
 
   try
     idx:=0;
-    Writeln('FileSize:' + IntToStr(FileSize(F)) + ' Rec Size:' + IntToStr(SizeOf(OneLineRec)));
+    //Writeln('FileSize:' + IntToStr(FileSize(F)) + ' Rec Size:' + IntToStr(SizeOf(OneLineRec)));
     Writeln('Num Records:' + IntToStr(FileSize(F) div SizeOf(OneLineRec)));
     repeat
       Read(F, Rec);
       Writeln('[' + IntToStr(idx) + '] ' + '(' + Rec.From + ') : ' + Rec.Text);
       Inc(idx);
     until EOF(F);
-
   finally
     Close(F);  
   end;
@@ -90,7 +89,7 @@ end;
 
 procedure Help;
 begin
-  ClrScr;
+  Writeln;
   Writeln('Options');
   Writeln('-------');
   Writeln('L)ist One-Liners');
@@ -105,8 +104,8 @@ var
 begin
   repeat
     Help;
-    selection:=ReadKey;
-    case UpCase(selection) of 
+    selection:=UpCase(ReadKey);
+    case selection of 
     '?': Help;
     'L': ListOneLiners;
     'D': DeleteOneLiner;
