@@ -84,7 +84,40 @@ begin
 end;
 
 procedure DeleteOneLiner;
-begin 
+var
+  OneLinerFullPath: string;
+  F: File Of OneLineRec;
+  Rec: OneLineRec;
+  idx: integer;
+  yn: char;
+begin
+  OneLinerFullPath := GetAbsolutePath(OneLinerFileName);
+
+  if NOT (OpenFileForReadWrite(F, OneLinerFullPath, 2500)) then
+  begin 
+    Writeln('Unable to open ' + OneLinerFullPath + ' for append.');
+    halt;
+  end;
+
+  Write('Enter the record to delete: ');
+  Readln(idx);
+
+  try
+    //Writeln('FileSize:' + IntToStr(FileSize(F)) + ' Rec Size:' + IntToStr(SizeOf(OneLineRec)));
+    Writeln('Num Records:' + IntToStr(FileSize(F) div SizeOf(OneLineRec)));
+    repeat
+      Seek(F, SizeOf(OneLineRec)*idx);
+      Read(F, Rec);
+      Writeln('Delete this entry:');
+      Writeln('[' + IntToStr(idx) + '] ' + '(' + Rec.From + ') : ' + Rec.Text);
+      Write('(Y/N) -> ');
+      Readln(yn);
+      if (UpCase(yn)='Y') then 
+        Writeln('Going to delete it');
+    until EOF(F);
+  finally
+    Close(F);  
+  end;
 end;
 
 procedure Help;
