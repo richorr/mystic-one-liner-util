@@ -99,20 +99,23 @@ begin
     halt;
   end;
 
-  Write('Enter the record to delete: ');
+  Write('Enter the record to delete: (0-' + IntToStr(FileSize(F) div SizeOf(OneLineRec)) + ') -> ');
   Readln(idx);
 
   try
     //Writeln('FileSize:' + IntToStr(FileSize(F)) + ' Rec Size:' + IntToStr(SizeOf(OneLineRec)));
     Writeln('Num Records:' + IntToStr(FileSize(F) div SizeOf(OneLineRec)));
-    Seek(F, SizeOf(OneLineRec)*idx);
-    Read(F, Rec);
-    Writeln('Delete this entry:');
-    Writeln('[' + IntToStr(idx) + '] ' + '(' + Rec.From + ') : ' + Rec.Text);
-    Write('(Y/N) -> ');
-    Readln(yn);
-    if (UpCase(yn)='Y') then 
-      Writeln('Going to delete it');
+    if (idx <= FileSize(F) div SizeOf(OneLineRec)) then 
+    begin 
+      Seek(F, SizeOf(OneLineRec)*idx);
+      Read(F, Rec);
+      Writeln('Delete this entry:');
+      Writeln('[' + IntToStr(idx) + '] ' + '(' + Rec.From + ') : ' + Rec.Text);
+      Write('(Y/N) -> ');
+      Readln(yn);
+      if (UpCase(yn)='Y') then 
+        Writeln('Going to delete it');
+    end;
   finally
     Close(F);  
   end;
