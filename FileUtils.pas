@@ -5,10 +5,17 @@ Unit FileUtils;
 Interface 
 Uses SysUtils;
 
+function GetAbsolutePath(AFileName: String): String;
 function OpenFileForOverwrite(out F: File; AFileName: String; ATimeoutInMilliseconds: Integer): Boolean;
 function OpenFileForReadWrite(out F: File; AFileName: String; ATimeoutInMilliseconds: Integer): Boolean;
 
 Implementation 
+
+function GetAbsolutePath(AFileName: String): String;
+begin
+//  AFileName := StringReplace(AFileName, '`*', [rfReplaceAll, rfIgnoreCase]);
+  Result := ExpandFileName(AFileName);
+end;
 
 function OpenFileForOverwrite(out F: File; AFileName: String; ATimeoutInMilliseconds: Integer): Boolean;
 var
