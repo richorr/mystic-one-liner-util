@@ -1,7 +1,7 @@
 Program MysticOLUtil;
 {$mode objfpc}{$h+}
 
-Uses StrUtils, SysUtils, Crt;
+Uses Generics.Collections, StrUtils, SysUtils, Crt;
 
 Const 
   OneLinerFileName = 'oneliner.dat';
@@ -88,8 +88,9 @@ var
   OneLinerFullPath: string;
   F: File Of OneLineRec;
   Rec: OneLineRec;
-  idx: integer;
+  idxRecToDelete, idxRecsToMove: integer;
   yn: char;
+  onelinerRecs: specialize TList<OneLineRec>;
 begin
   OneLinerFullPath := GetAbsolutePath(OneLinerFileName);
 
@@ -100,24 +101,39 @@ begin
   end;
 
   Write('Enter the record to delete: (0-' + IntToStr((FileSize(F) div SizeOf(OneLineRec))-1) + ') -> ');
-  Readln(idx);
+  Readln(idxRecToDelete);
 
   try
+
+    onelinerRecs:=specialize TList<OneLineRec>.Create();
     //Writeln('FileSize:' + IntToStr(FileSize(F)) + ' Rec Size:' + IntToStr(SizeOf(OneLineRec)));
     Writeln('Num Records:' + IntToStr(FileSize(F) div SizeOf(OneLineRec)));
-    if (idx <= FileSize(F) div SizeOf(OneLineRec)) then 
+    if (idxRecToDelete <= FileSize(F) div SizeOf(OneLineRec)) then 
     begin 
-      Seek(F, SizeOf(OneLineRec)*idx);
+      Seek(F, SizeOf(OneLineRec)*idxRecToDelete);
       Read(F, Rec);
       Writeln('Delete this entry:');
-      Writeln('[' + IntToStr(idx) + '] ' + '(' + Rec.From + ') : ' + Rec.Text);
+      Writeln('[' + IntToStr(idxRecToDelete) + '] ' + '(' + Rec.From + ') : ' + Rec.Text);
       Write('(Y/N) -> ');
       Readln(yn);
       if (UpCase(yn)='Y') then 
+      begin
+        (* Read the remaining records *)
+        repeat
+          Read(F, Rec);
+          onelinerRecs.Add(Rec);
+        until EOF(F); 
         Writeln('Going to delete it');
+        (* Move to the previous record from the one being deleted *)
+        Seek(F, SizeOf(OneLineRec)*(idxRecToDelete));
+        (* Move all of the files *)
+        for idxRecsToMove := 0 to onelinerRecs.Count-1 do 
+          Write(F, onelinerRecs[idxRecsToMove]);
+      end;
     end;
   finally
     Close(F);  
+    FreeAndNil(onelinerRecs);
   end;
 end;
 
