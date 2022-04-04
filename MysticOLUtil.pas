@@ -1,7 +1,7 @@
 Program MysticOLUtil;
 {$mode objfpc}{$h+}
 
-Uses Generics.Collections, StrUtils, SysUtils, Crt;
+Uses Generics.Collections, StrUtils, SysUtils, Crt, FileUtils;
 
 Const 
   OneLinerFileName = 'oneliner.dat';
@@ -14,39 +14,6 @@ Type
     Text : String[79];
     From : String[30];
   End;
-
-function OpenFileForReadWrite(out F: File; AFileName: String; ATimeoutInMilliseconds: Integer): Boolean;
-var
-  I: Integer;
-begin
-  Result := false;
-
-  if (FileExists(AFileName)) then
-  begin
-    for I := 1 to ATimeoutInMilliseconds div 100 do
-    begin
-      Assign(F, AFileName);
-      {$I-}Reset(F, 1);{$I+}
-      if (IOResult = 0) then
-      begin
-        Result := true;
-        Exit;
-      end;
-
-      Sleep(100); // Wait 1/10th of a second before retrying
-    end;
-  end 
-  else
-  begin
-    Assign(F, AFileName);
-    {$I-}ReWrite(F, 1);{$I+}
-    if (IOResult = 0) then
-    begin
-      Result := true;
-      Exit;
-    end;
-  end;
-end;
 
 function GetAbsolutePath(AFileName: String): String;
 begin
@@ -88,7 +55,7 @@ var
   OneLinerFullPath: string;
   F: File Of OneLineRec;
   Rec: OneLineRec;
-  idxRecToDelete, idxRecsToMove: integer;
+  idxRecToDelete, idxRecsToMove, idxCurrRec: integer;
   yn: char;
   onelinerRecs: specialize TList<OneLineRec>;
 begin
@@ -119,13 +86,23 @@ begin
       if (UpCase(yn)='Y') then 
       begin
         (* Read the remaining records *)
+        Seek(F, 0);
+        idxCurrRec := 0;
         repeat
           Read(F, Rec);
-          onelinerRecs.Add(Rec);
-        until EOF(F); 
-        Writeln('Going to delete it');
-        (* Move to the previous record from the one being deleted *)
-        Seek(F, SizeOf(OneLineRec)*(idxRecToDelete));
+          if (idxCurrRec <> idxRecToDelete) then
+            onelinerRecs.Add(Rec);
+          Inc(idxCurrRec);
+        until EOF(F);
+        Close(F);
+
+        (* Rewrite the file with the deleted record removed *)
+        if NOT (OpenFileForOverwrite(F, OneLinerFullPath, 2500)) then
+        begin 
+          Writeln('Unable to open ' + OneLinerFullPath + ' for append.');
+          halt;
+        end;
+ 
         (* Move all of the files *)
         for idxRecsToMove := 0 to onelinerRecs.Count-1 do 
           Write(F, onelinerRecs[idxRecsToMove]);
