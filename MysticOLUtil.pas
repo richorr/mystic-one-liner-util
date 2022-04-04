@@ -99,7 +99,7 @@ begin
     halt;
   end;
 
-  Write('Enter the record to delete: (0-' + IntToStr(FileSize(F) div SizeOf(OneLineRec)) + ') -> ');
+  Write('Enter the record to delete: (0-' + IntToStr((FileSize(F) div SizeOf(OneLineRec))-1) + ') -> ');
   Readln(idx);
 
   try
