@@ -20,11 +20,11 @@ procedure PhenomTitle;
 begin
 DoorWriteln('                   $$sss  s$"                              5m  ');
 DoorWriteln('                   $$  $$ $$                                   ');
-DoorWriteln('|03                   $$"""" $$""$e $"//  $$""s  $$""$$ $$sssss            |07');
+DoorWriteln('|03                   $$"""" $$""$e $"//  $$""s  $$""$$ $$sssss   |07');
 DoorWriteln('|02                   $$     $$  $$ $SSSS $$  $$ $$$$$$ $$ $$ $$  |07');
 DoorWriteln; 
 DoorWriteln('|05                         --- P R O D U C T I O N S ---       |07');
-DoorWriteln('|05						           EST : 2018                             |07'); 
+DoorWriteln('|05                                  EST : 2018                 |07'); 
 DoorWriteln;
 DoorWriteln;
 DoorWriteln('                   |0AMystic One-Liner Utility                    |07');
