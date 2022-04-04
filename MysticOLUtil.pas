@@ -105,16 +105,14 @@ begin
   try
     //Writeln('FileSize:' + IntToStr(FileSize(F)) + ' Rec Size:' + IntToStr(SizeOf(OneLineRec)));
     Writeln('Num Records:' + IntToStr(FileSize(F) div SizeOf(OneLineRec)));
-    repeat
-      Seek(F, SizeOf(OneLineRec)*idx);
-      Read(F, Rec);
-      Writeln('Delete this entry:');
-      Writeln('[' + IntToStr(idx) + '] ' + '(' + Rec.From + ') : ' + Rec.Text);
-      Write('(Y/N) -> ');
-      Readln(yn);
-      if (UpCase(yn)='Y') then 
-        Writeln('Going to delete it');
-    until EOF(F);
+    Seek(F, SizeOf(OneLineRec)*idx);
+    Read(F, Rec);
+    Writeln('Delete this entry:');
+    Writeln('[' + IntToStr(idx) + '] ' + '(' + Rec.From + ') : ' + Rec.Text);
+    Write('(Y/N) -> ');
+    Readln(yn);
+    if (UpCase(yn)='Y') then 
+      Writeln('Going to delete it');
   finally
     Close(F);  
   end;
