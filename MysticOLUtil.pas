@@ -5,6 +5,10 @@ Uses Generics.Collections, StrUtils, SysUtils, Crt, FileUtils;
 
 Const 
   OneLinerFileName = 'oneliner.dat';
+  GreenText = #27 + '[1;[32m';
+  MagentaText = #27 + '[1;[35m';
+  WhiteText = #27 + '[1;[37m';
+  CyanText = #27 + '[1;[36m';
 
 Type 
 (* ONELINERS.DAT found in the data directory.  This file contains all the
@@ -15,10 +19,19 @@ Type
     From : String[30];
   End;
 
-function GetAbsolutePath(AFileName: String): String;
+procedure PhenomTitle;
 begin
-//  AFileName := StringReplace(AFileName, '`*', [rfReplaceAll, rfIgnoreCase]);
-  Result := ExpandFileName(AFileName);
+Writeln('                   $$sss  s$"                              5m  ');
+Writeln('                   $$  $$ $$                                   ');
+Writeln(CyanText + '                   $$"""" $$""$e $"//  $$""s  $$""$$ $$sssss   ' + WhiteText);
+Writeln(GreenText + '                   $$     $$  $$ $SSSS $$  $$ $$$$$$ $$ $$ $$  ' + WhiteText);
+Writeln; 
+Writeln(MagentaText + '                         --- P R O D U C T I O N S ---         ' + WhiteText);
+Writeln(MagentaText + '						           EST : 2018                               ' + WhiteText); 
+Writeln;
+Writeln;
+Writeln('                   ' + GreenText + 'Mystic One-Liner Utility                    ');
+Writeln('                   By: ' + GreenText + 'Hayes Zyxel (Baud Games)' + WhiteText);
 end;
 
 procedure ListOneLiners;
@@ -117,11 +130,11 @@ end;
 procedure Help;
 begin
   Writeln;
-  Writeln('Options');
-  Writeln('-------');
-  Writeln('L)ist One-Liners');
-  Writeln('D)elete One-Liner');
-  Writeln('Q)uit');
+  Writeln(GreenText + 'Options' + WhiteText);
+  Writeln(GreenText + '-------' + WhiteText);
+  Writeln(GreenText + 'L' + WhiteText + ')ist One-Liners');
+  Writeln(GreenText + 'D' + WhiteText + ')elete One-Liner');
+  Writeln(GreenText + 'Q' + WhiteText + ')uit');
   Writeln;
 end;
 
@@ -129,6 +142,8 @@ end;
 var
   selection: char;
 begin
+  ClrScr;
+  PhenomTitle;
   repeat
     Help;
     selection:=UpCase(ReadKey);
