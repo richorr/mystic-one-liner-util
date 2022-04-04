@@ -1,14 +1,11 @@
 Program MysticOLUtil;
-{$mode objfpc}{$h+}
+{$mode objfpc}{$H+}
+{$MODESWITCH ADVANCEDRECORDS}
 
-Uses Generics.Collections, StrUtils, SysUtils, Crt, FileUtils;
+Uses Generics.Collections, StrUtils, SysUtils, Crt, Door, FileUtils;
 
 Const 
   OneLinerFileName = 'oneliner.dat';
-  GreenText = #27 + '[1;[32m';
-  MagentaText = #27 + '[1;[35m';
-  WhiteText = #27 + '[1;[37m';
-  CyanText = #27 + '[1;[36m';
 
 Type 
 (* ONELINERS.DAT found in the data directory.  This file contains all the
@@ -21,17 +18,17 @@ Type
 
 procedure PhenomTitle;
 begin
-Writeln('                   $$sss  s$"                              5m  ');
-Writeln('                   $$  $$ $$                                   ');
-Writeln(CyanText + '                   $$"""" $$""$e $"//  $$""s  $$""$$ $$sssss   ' + WhiteText);
-Writeln(GreenText + '                   $$     $$  $$ $SSSS $$  $$ $$$$$$ $$ $$ $$  ' + WhiteText);
-Writeln; 
-Writeln(MagentaText + '                         --- P R O D U C T I O N S ---         ' + WhiteText);
-Writeln(MagentaText + '						           EST : 2018                               ' + WhiteText); 
-Writeln;
-Writeln;
-Writeln('                   ' + GreenText + 'Mystic One-Liner Utility                    ');
-Writeln('                   By: ' + GreenText + 'Hayes Zyxel (Baud Games)' + WhiteText);
+DoorWriteln('                   $$sss  s$"                              5m  ');
+DoorWriteln('                   $$  $$ $$                                   ');
+DoorWriteln('|03                   $$"""" $$""$e $"//  $$""s  $$""$$ $$sssss            |07');
+DoorWriteln('|02                   $$     $$  $$ $SSSS $$  $$ $$$$$$ $$ $$ $$  |07');
+DoorWriteln; 
+DoorWriteln('|05                         --- P R O D U C T I O N S ---       |07');
+DoorWriteln('|05						           EST : 2018                             |07'); 
+DoorWriteln;
+DoorWriteln;
+DoorWriteln('                   |0AMystic One-Liner Utility                    |07');
+DoorWriteln('                   By: |0AHayes Zyxel (Baud Games)|07');
 end;
 
 procedure ListOneLiners;
@@ -45,7 +42,7 @@ begin
 
   if NOT (OpenFileForReadWrite(F, OneLinerFullPath, 2500)) then
   begin 
-    Writeln('Unable to open ' + OneLinerFullPath + ' for append.');
+    DoorWriteln('|04Unable to open ' + OneLinerFullPath + ' for append.|07');
     halt;
   end;
 
@@ -76,7 +73,7 @@ begin
 
   if NOT (OpenFileForReadWrite(F, OneLinerFullPath, 2500)) then
   begin 
-    Writeln('Unable to open ' + OneLinerFullPath + ' for append.');
+    DoorWriteln('|04Unable to open ' + OneLinerFullPath + ' for append.|07');
     halt;
   end;
 
@@ -84,17 +81,15 @@ begin
   Readln(idxRecToDelete);
 
   try
-
     onelinerRecs:=specialize TList<OneLineRec>.Create();
     //Writeln('FileSize:' + IntToStr(FileSize(F)) + ' Rec Size:' + IntToStr(SizeOf(OneLineRec)));
-    Writeln('Num Records:' + IntToStr(FileSize(F) div SizeOf(OneLineRec)));
+    DoorWriteln('|02Num Records:' + IntToStr(FileSize(F) div SizeOf(OneLineRec)) + '|07');
     if (idxRecToDelete <= FileSize(F) div SizeOf(OneLineRec)) then 
     begin 
       Seek(F, SizeOf(OneLineRec)*idxRecToDelete);
       Read(F, Rec);
-      Writeln('Delete this entry:');
-      Writeln('[' + IntToStr(idxRecToDelete) + '] ' + '(' + Rec.From + ') : ' + Rec.Text);
-      Write('(Y/N) -> ');
+      DoorWriteln('[' + IntToStr(idxRecToDelete) + '] ' + '(' + Rec.From + ') : ' + Rec.Text);
+      DoorWriteln('|02Delete this entry (Y/N) -> ');
       Readln(yn);
       if (UpCase(yn)='Y') then 
       begin
@@ -112,7 +107,7 @@ begin
         (* Rewrite the file with the deleted record removed *)
         if NOT (OpenFileForOverwrite(F, OneLinerFullPath, 2500)) then
         begin 
-          Writeln('Unable to open ' + OneLinerFullPath + ' for append.');
+          DoorWriteln('|04Unable to open ' + OneLinerFullPath + ' for append.|07');
           halt;
         end;
  
@@ -129,13 +124,13 @@ end;
 
 procedure Help;
 begin
-  Writeln;
-  Writeln(GreenText + 'Options' + WhiteText);
-  Writeln(GreenText + '-------' + WhiteText);
-  Writeln(GreenText + 'L' + WhiteText + ')ist One-Liners');
-  Writeln(GreenText + 'D' + WhiteText + ')elete One-Liner');
-  Writeln(GreenText + 'Q' + WhiteText + ')uit');
-  Writeln;
+  DoorWriteln;
+  DoorWriteln('|02Options|07');
+  DoorWriteln('|02-------|07');
+  DoorWriteln('|02L|07)ist One-Liners');
+  DoorWriteln('|02D|07)elete One-Liner');
+  DoorWriteln('|02Q|07)uit');
+  DoorWriteln;
 end;
 
 {Here the main program block starts}
